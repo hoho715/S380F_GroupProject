@@ -21,11 +21,10 @@ public class Poll {
     @Fetch(FetchMode.SUBSELECT)
     private List<PollOption> pollOptions = new ArrayList<>();
 
-    @Column(name = "lecture_id", insertable=false, updatable=false)
-    private long lecturid;
-    @ManyToOne
-    @JoinColumn(name = "lecture_id")
-    private Lecture lecture;
+    @OneToMany(mappedBy = "poll", fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<PollComment> pollComments = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -51,19 +50,11 @@ public class Poll {
         this.pollOptions = pollOptions;
     }
 
-    public long getLecturid() {
-        return lecturid;
+    public List<PollComment> getPollComments() {
+        return pollComments;
     }
 
-    public void setLecturid(long lecturid) {
-        this.lecturid = lecturid;
-    }
-
-    public Lecture getLecture() {
-        return lecture;
-    }
-
-    public void setLecture(Lecture lecture) {
-        this.lecture = lecture;
+    public void setPollComments(List<PollComment> pollComments) {
+        this.pollComments = pollComments;
     }
 }

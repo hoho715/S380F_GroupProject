@@ -9,9 +9,13 @@ import hkmu.wadd.s380f_groupproject.model.Lecture;
 import hkmu.wadd.s380f_groupproject.view.DownloadingView;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import org.hibernate.engine.jdbc.mutation.spi.BindingGroup;
 import org.springframework.boot.actuate.web.exchanges.HttpExchange;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -47,10 +51,14 @@ public class CourseController {
     }
 
     @PostMapping("/create")
-    public RedirectView create(LectureForm form) throws IOException {
+    public String create(@ModelAttribute("lectureForm") @Valid LectureForm form, BindingResult result) throws IOException {
+
+        if (result.hasErrors()) {
+            return "addLecture";
+        }
         long ticketId = lectureService.createLecture(form.getLetureName(),
                 form.getLectureDescription(), form.getAttachments());
-        return new RedirectView("/course/lecture/" + ticketId, true);
+        return "redirect:/course/lecture/" + ticketId;
     }
 
     @GetMapping("/{lectureId}/attachment/{attachment:.+}")
@@ -63,8 +71,12 @@ public class CourseController {
     }
 
     public static class LectureForm {
+        @NotEmpty(message="Please enter a comment.")
         private String letureName;
+
+        @NotEmpty(message="Please enter a description.")
         private String lectureDescription;
+
         private List<MultipartFile> attachments;
 
         public String getLetureName() {
@@ -113,10 +125,15 @@ public class CourseController {
     }
 
     @PostMapping("/edit/{lectureId}")
-    public String edit(@PathVariable("lectureId") long lectureId, LectureForm form,
-                       Principal principal, HttpServletRequest request)
+    public String edit(@PathVariable("lectureId") long lectureId,@ModelAttribute("lectureForm") @Valid LectureForm form,
+                       Principal principal, HttpServletRequest request,BindingResult result)
             throws IOException, LectureNotFound {
         Lecture lecture = lectureService.getLecturebyId((int)lectureId);
+
+        if (result.hasErrors()) {
+            return "addLecture";
+        }
+
         if (lecture == null) {
             return "redirect:/course";
         }

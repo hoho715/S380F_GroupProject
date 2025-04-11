@@ -21,12 +21,12 @@ public class Lecture {
     @OneToMany(mappedBy = "lecture", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
-    private List<Poll> polls = new ArrayList<>();
+    private List<Attachment> attachments = new ArrayList<>();
 
     @OneToMany(mappedBy = "lecture", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
-    private List<Attachment> attachments = new ArrayList<>();
+    private List<LectureComment> lectureComments = new ArrayList<>();
 
 
     public long getId() {
@@ -43,14 +43,6 @@ public class Lecture {
 
     public void setLectureName(String lectureName) {
         this.lectureName = lectureName;
-    }
-
-    public List<Poll> getPolls() {
-        return polls;
-    }
-
-    public void setPolls(List<Poll> polls) {
-        this.polls = polls;
     }
 
     public String getLectureDescription() {
@@ -78,6 +70,14 @@ public class Lecture {
 
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public List<LectureComment> getLectureComments() {
+        return lectureComments;
+    }
+
+    public void setLectureComments(List<LectureComment> lectureComments) {
+        this.lectureComments = lectureComments;
     }
 }
 
