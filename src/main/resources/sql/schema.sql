@@ -1,9 +1,12 @@
+drop table if exists POLL_COMMENT;
+drop table if exists LECTURE_COMMENT;
 drop table if exists POLL_RESPONSE;
 drop table if exists POLL_OPTION;
 drop table if exists POLL;
 drop table if exists ATTACHMENT;
 drop table if exists LECTURE;
 drop table if exists REG_USER;
+
 
 
 create table if not exists LECTURE
@@ -57,6 +60,32 @@ create table if not exists REG_USER
     ROLE          ENUM ('ROLE_USER', 'ROLE_ADMIN'),
     USERNAME      CHARACTER VARYING(255)
         unique
+);
+
+create table if not exists LECTURE_COMMENT
+(
+    ID         BIGINT auto_increment
+        primary key,
+    CONTENT    CHARACTER VARYING(255),
+    LECTURE_ID BIGINT,
+    USER_ID    BIGINT,
+    constraint FKGHRC1G80KR6NB7WCQ4IR5VSG0
+        foreign key (USER_ID) references REG_USER,
+    constraint FKNYSPICR4WIKY666G6YEJCKKQE
+        foreign key (LECTURE_ID) references LECTURE
+);
+
+create table if not exists POLL_COMMENT
+(
+    ID      BIGINT auto_increment
+        primary key,
+    CONTENT CHARACTER VARYING(255),
+    POLL_ID BIGINT,
+    USER_ID BIGINT,
+    constraint FK5XO8QE4UNJBFLXE8649GDT6UG
+        foreign key (POLL_ID) references POLL,
+    constraint FKPUECGVWUDWIWI28IC0LS58SVH
+        foreign key (USER_ID) references REG_USER
 );
 
 create table if not exists POLL_RESPONSE
