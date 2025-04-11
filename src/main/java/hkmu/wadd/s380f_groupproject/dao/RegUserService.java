@@ -26,6 +26,6 @@ public class RegUserService implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(regUser.getRole().toString()));
 
-        return new User(regUser.getUsername(), regUser.getPassword(), authorities);
+        return new User(regUser.getId().toString(), regUser.getPassword(), authorities);
     }
 }

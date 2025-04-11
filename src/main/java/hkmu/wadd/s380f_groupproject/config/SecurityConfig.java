@@ -15,14 +15,12 @@ public class SecurityConfig {
             throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/ticket/delete/**").hasRole("ADMIN")
-                        .requestMatchers("/ticket/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/user/**").hasRole("ADMIN")
+                        .requestMatchers("/course/lecture/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .failureUrl("/login?error=fail")
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
                 .logout(logout -> logout

@@ -5,7 +5,10 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Entity
 public class Lecture {
@@ -13,11 +16,18 @@ public class Lecture {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String lectureName;
+    private String lectureDescription;
 
     @OneToMany(mappedBy = "lecture", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
     private List<Poll> polls = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lecture", fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Attachment> attachments = new ArrayList<>();
+
 
     public long getId() {
         return id;
@@ -41,6 +51,33 @@ public class Lecture {
 
     public void setPolls(List<Poll> polls) {
         this.polls = polls;
+    }
+
+    public String getLectureDescription() {
+        return lectureDescription;
+    }
+
+    public void setLectureDescription(String lectureDescription) {
+        this.lectureDescription = lectureDescription;
+    }
+
+
+    public int getNumberOfAttachments() {
+        return this.attachments.size();
+    }
+
+
+    public void deleteAttachment(Attachment attachment) {
+        attachment.setLecture(null);
+        this.attachments.remove(attachment);
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
     }
 }
 

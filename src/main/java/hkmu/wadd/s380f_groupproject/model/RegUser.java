@@ -25,7 +25,18 @@ public class RegUser {
 
     public RegUser() {}
 
-    public RegUser(String username, String password, String[] roles) {
+    public RegUser(String fullName,String username, String password, String role) {
+        this.fullName = fullName;
+        this.username = username;
+        this.password = password;
+        this.role = Role.valueOf(role);
+    }
+
+    public RegUser(String fullName,String username, String password, String emailAddress,String phoneNumber,String role) {
+        this.fullName = fullName;
+        this.username = username;
+        this.password = password;
+        this.role = Role.valueOf(role);
     }
 
     public enum Role {

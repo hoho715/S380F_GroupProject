@@ -1,14 +1,29 @@
-DROP TABLE if exists POLL_RESPONSE;
-DROP TABLE if exists POLL_OPTION;
-DROP TABLE if exists REG_USER;
-DROP TABLE if exists POLL;
-DROP TABLE if exists LECTURE;
+drop table if exists POLL_RESPONSE;
+drop table if exists POLL_OPTION;
+drop table if exists POLL;
+drop table if exists ATTACHMENT;
+drop table if exists LECTURE;
+drop table if exists REG_USER;
+
 
 create table if not exists LECTURE
 (
-    ID           BIGINT auto_increment
+    ID                  BIGINT auto_increment
         primary key,
-    LECTURE_NAME CHARACTER VARYING(255)
+    LECTURE_NAME        CHARACTER VARYING(255),
+    LECTURE_DESCRIPTION CHARACTER VARYING(255)
+);
+
+create table if not exists ATTACHMENT
+(
+    ID           UUID default RANDOM_UUID() not null
+        primary key,
+    CONTENT      BINARY LARGE OBJECT,
+    LECTURE_ID   BIGINT,
+    CONTENT_TYPE CHARACTER VARYING(255),
+    FILENAME     CHARACTER VARYING(255),
+    constraint FKA6APWE76XLLJXTM3NIMRLVPPF
+        foreign key (LECTURE_ID) references LECTURE
 );
 
 create table if not exists POLL
@@ -33,13 +48,15 @@ create table if not exists POLL_OPTION
 
 create table if not exists REG_USER
 (
-    ID            BIGINT auto_increment primary key,
-    EMAIL_ADDRESS CHARACTER VARYING(255) NULL,
+    ID            BIGINT auto_increment
+        primary key,
+    EMAIL_ADDRESS CHARACTER VARYING(255),
     FULL_NAME     CHARACTER VARYING(255),
     PASSWORD      CHARACTER VARYING(255),
-    PHONE_NUMBER  CHARACTER VARYING(255) NULL,
+    PHONE_NUMBER  CHARACTER VARYING(255),
     ROLE          ENUM ('ROLE_USER', 'ROLE_ADMIN'),
-    USERNAME      CHARACTER VARYING(255) UNIQUE
+    USERNAME      CHARACTER VARYING(255)
+        unique
 );
 
 create table if not exists POLL_RESPONSE
