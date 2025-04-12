@@ -5,6 +5,7 @@ import hkmu.wadd.s380f_groupproject.exception.LectureNotFound;
 import hkmu.wadd.s380f_groupproject.model.Attachment;
 import hkmu.wadd.s380f_groupproject.model.Lecture;
 import hkmu.wadd.s380f_groupproject.model.LectureComment;
+import hkmu.wadd.s380f_groupproject.model.LectureCommentHistory;
 import jakarta.annotation.Resource;
 import org.apache.jasper.tagplugins.jstl.core.When;
 import org.hibernate.annotations.View;
@@ -35,6 +36,8 @@ public class LectureService {
     @Resource
     private RegUserRepository regUserRepository;
 
+    @Resource
+    private LectureCommentHistoryRepository lectureCommentHistoryRepository;
 
     @Transactional
     public List<Lecture> getLectures() {
@@ -139,6 +142,13 @@ public class LectureService {
         lectureComment.setLecture(lectureRepository.findById((long) lectureId).orElse(null));
         lectureComment.setRegUser(regUserRepository.findById(String.valueOf(userId)).orElse(null));
         lectureCommentRepository.save(lectureComment);
+
+        LectureCommentHistory lectureCommentHistory = new LectureCommentHistory();
+        lectureCommentHistory.setUser(regUserRepository.findById(String.valueOf(userId)).orElse(null));
+        lectureCommentHistory.setLectureName(lectureComment.getLecture().getLectureName());
+        lectureCommentHistory.setComment(lectureComment.getContent());
+        lectureCommentHistory.setAction("COMMENT");
+        lectureCommentHistoryRepository.save(lectureCommentHistory);
     }
 
     @Transactional
@@ -151,5 +161,12 @@ public class LectureService {
         LectureComment deletedComment = lectureCommentRepository.findById(String.valueOf(commentId)).orElse(null);
         Lecture lecture = deletedComment.getLecture();
         lecture.getLectureComments().remove(deletedComment);
+
+        LectureCommentHistory lectureCommentHistory = new LectureCommentHistory();
+        lectureCommentHistory.setUser(deletedComment.getRegUser());
+        lectureCommentHistory.setLectureName(lecture.getLectureName());
+        lectureCommentHistory.setComment(deletedComment.getContent());
+        lectureCommentHistory.setAction("DELETE");
+        lectureCommentHistoryRepository.save(lectureCommentHistory);
     }
 }

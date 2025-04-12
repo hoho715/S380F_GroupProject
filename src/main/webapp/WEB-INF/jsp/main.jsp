@@ -21,6 +21,10 @@
         <br/>
     </security:authorize>
 
+    <security:authorize access="hasRole('ADMIN') or hasRole('USER')">
+        <a href="<c:url value="/course/history" />">Comment and vote history</a><br /><br />
+    </security:authorize>
+
     <security:authorize access="hasRole('ADMIN')">
     <a href="<c:url value="/user" />">Manage User Accounts</a><br /><br />
     </security:authorize>
@@ -53,8 +57,8 @@
                 <c:forEach items="${lectureData}" var="entry">
                     <tr>
                         <td><a href="/csCourse/course/lecture/${entry.id}">${entry.lectureName}</a><br/></td>
-                        <td><a href="<c:url value="/course/edit/${entry.id}" />">Edit</a><br /><br /> </td>
                         <security:authorize access="hasRole('ADMIN')">
+                        <td><a href="<c:url value="/course/edit/${entry.id}" />">Edit</a><br /><br /> </td>
                             <td>
                                 [<a href="<c:url value="/course/delete/${entry.id}" />">Delete</a>]
                             </td>
@@ -65,6 +69,7 @@
         </c:otherwise>
     </c:choose>
 
+<security:authorize access="hasRole('USER')||hasRole('ADMIN')">
     <c:choose>
         <c:when test="${fn:length(pollData) == 0}">
             <i>There are no poll available.</i>
@@ -90,6 +95,6 @@
             </table>
         </c:otherwise>
     </c:choose>
-
+</security:authorize>
 </body>
 </html>

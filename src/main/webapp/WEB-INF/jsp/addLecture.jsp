@@ -11,7 +11,8 @@
   </style>
 </head>
 <body>
-<h2>Create a Ticket</h2>
+<a href="<c:url value="/user" />">Back</a>
+<h2>Create Lecture</h2>
 <form:form method="POST" enctype="multipart/form-data" modelAttribute="lectureForm">
   <form:label path="letureName">Lecture Name</form:label><br/>
   <form:errors path="letureName" cssClass="error" />

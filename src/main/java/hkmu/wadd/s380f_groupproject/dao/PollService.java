@@ -20,6 +20,9 @@ public class PollService {
     @Resource
     private PollCommentRepository pollCommentRepository;
 
+    @Resource
+    private PollCommentHistoryRepository pollCommentHistoryRepository;
+
     @Transactional
     public List<Poll> getPolls() {
         return pollRepository.findAll();
@@ -75,6 +78,13 @@ public class PollService {
         pollComment.setPoll(pollRepository.findById((long) pollId).orElse(null));
         pollComment.setRegUser(regUserRepository.findById(String.valueOf(userId)).orElse(null));
         pollCommentRepository.save(pollComment);
+
+        PollCommentHistory pollCommentHistory = new PollCommentHistory();
+        pollCommentHistory.setUser(regUserRepository.findById(String.valueOf(userId)).orElse(null));
+        pollCommentHistory.setPollQuestion(pollComment.getPoll().getQuestion());
+        pollCommentHistory.setComment(pollComment.getContent());
+        pollCommentHistory.setAction("COMMENT");
+        pollCommentHistoryRepository.save(pollCommentHistory);
     }
 
     @Transactional
@@ -87,5 +97,12 @@ public class PollService {
         PollComment deletedComment = pollCommentRepository.findById(String.valueOf(commentId)).orElse(null);
         Poll poll = deletedComment.getPoll();
         poll.getPollComments().remove(deletedComment);
+
+        PollCommentHistory pollCommentHistory = new PollCommentHistory();
+        pollCommentHistory.setUser(deletedComment.getRegUser());
+        pollCommentHistory.setPollQuestion(poll.getQuestion());
+        pollCommentHistory.setComment(deletedComment.getContent());
+        pollCommentHistory.setAction("DELETE");
+        pollCommentHistoryRepository.save(pollCommentHistory);
     }
 }

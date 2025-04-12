@@ -1,3 +1,6 @@
+drop table if exists VOTE_HISTORY;
+drop table if exists POLL_COMMENT_HISTORY;
+drop table if exists LECTURE_COMMENT_HISTORY;
 drop table if exists POLL_COMMENT;
 drop table if exists LECTURE_COMMENT;
 drop table if exists POLL_RESPONSE;
@@ -96,3 +99,40 @@ create table if not exists POLL_RESPONSE
     constraint FKMB7ATE198QEUHPP33NXVXHE9A
         foreign key (OPTION_ID) references POLL_OPTION
 );
+
+create table if not exists LECTURE_COMMENT_HISTORY
+(
+    ID      BIGINT auto_increment
+        primary key,
+    ACTION  CHARACTER VARYING(255),
+    COMMENT CHARACTER VARYING(255),
+    USER_ID BIGINT,
+    LECTURE_NAME CHARACTER VARYING(255),
+    constraint FKMRNX6Y830UEIBA9LPHPASAXGW
+        foreign key (USER_ID) references REG_USER
+);
+
+create table if not exists POLL_COMMENT_HISTORY
+(
+    ID      BIGINT auto_increment
+        primary key,
+    ACTION  CHARACTER VARYING(255),
+    COMMENT CHARACTER VARYING(255),
+    USER_ID BIGINT,
+    POLL_QUESTION CHARACTER VARYING(255),
+    constraint FKIEQ5G8X0WHODJ2JJ4L9XCOVKT
+        foreign key (USER_ID) references REG_USER
+);
+
+create table if not exists VOTE_HISTORY
+(
+    ID      BIGINT auto_increment
+        primary key,
+    ACTION  CHARACTER VARYING(255),
+    OPTION  CHARACTER VARYING(255),
+    USER_ID BIGINT,
+    POLL_QUESTION CHARACTER VARYING(255),
+    constraint FK2X0YN6P0T03KO0J5L6HAUC70O
+        foreign key (USER_ID) references REG_USER
+);
+

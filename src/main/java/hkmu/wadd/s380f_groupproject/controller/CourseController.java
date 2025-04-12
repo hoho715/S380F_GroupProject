@@ -1,5 +1,6 @@
 package hkmu.wadd.s380f_groupproject.controller;
 
+import hkmu.wadd.s380f_groupproject.dao.HistoryService;
 import hkmu.wadd.s380f_groupproject.dao.LectureService;
 import hkmu.wadd.s380f_groupproject.dao.PollService;
 import hkmu.wadd.s380f_groupproject.exception.AttachmentNotFound;
@@ -33,8 +34,10 @@ import java.util.UUID;
 public class CourseController {
     @Resource
     private LectureService lectureService;
-    @Autowired
+    @Resource
     private PollService pollService;
+    @Resource
+    private HistoryService historyService;
 
     @GetMapping(value = {"", "/list"})
     public String list(ModelMap model) {
@@ -176,6 +179,21 @@ public class CourseController {
     public String deleteComment(@PathVariable("messageId") long messageId,@PathVariable("lectureId") long lectureId) {
         lectureService.deleteComment(lectureId,messageId);
         return "redirect:/course/lecture/"+lectureId;
+    }
+
+    @GetMapping(value = {"/history"})
+    public String history(ModelMap model,HttpServletRequest request,Principal principal) {
+        if(request.isUserInRole("ROLE_ADMIN")){
+            model.addAttribute("lCommentHistory",historyService.getAllLectureCommentHistory());
+            model.addAttribute("pCommentHistory",historyService.getAllPollCommentHistory());
+            model.addAttribute("voteHistory",historyService.getAllVoteHistory());
+        }
+        if(request.isUserInRole("ROLE_USER")){
+            model.addAttribute("lCommentHistory",historyService.getLectureCommentHistoryById(Long.parseLong(principal.getName())));
+            model.addAttribute("pCommentHistory",historyService.getPollCommentHistoryById(Long.parseLong(principal.getName())));
+            model.addAttribute("voteHistory",historyService.getVoteHistoryById(Long.parseLong(principal.getName())));
+        }
+        return "history";
     }
 
 
