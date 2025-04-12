@@ -1,48 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Customer Support</title>
+  <title>Add User</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     .error {
-      color: red;
-      font-weight: bold;
-      display: block;
+      color: #dc3545;
+      font-size: 0.875em;
     }
   </style>
 </head>
-<body>
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post">
-  <input type="submit" value="Log out"/>
-  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
+<div class="card shadow">
+  <div class="card-body">
+    <h2 class="card-title mb-4">Add User</h2>
 
-<a href="<c:url value="/user" />">Back</a>
+    <form:form method="POST" modelAttribute="addUser" class="needs-validation">
+      <div class="mb-3">
+        <form:label path="fullname" class="form-label">Full name</form:label>
+        <form:input type="text" path="fullname" class="form-control"/>
+        <form:errors path="fullname" cssClass="error" />
+      </div>
 
-<h2>Add User</h2>
-<form:form method="POST" modelAttribute="addUser">
-  <form:label path="fullname">Full name</form:label><br/>
-  <form:errors path="fullname" cssClass="error" />
-  <form:input type="text" path="fullname"/>
-  <br/><br/>
-  <form:label path="username">Username</form:label><br/>
-  <form:errors path="username" cssClass="error" />
-  <form:input type="text" path="username"/>
-  <br/><br/>
-  <form:label path="password">Password</form:label><br/>
-  <form:errors path="password" cssClass="error" />
-  <form:input type="text" path="password"/>
-  <br/><br/>
-  <form:label path="confirm_password">Confirm Password</form:label><br/>
-<form:errors path="confirm_password" cssClass="error" />
-<form:input type="text" path="confirm_password" />
-  <br/><br/>
-  <form:label path="roles">Roles</form:label><br/>
-  <form:errors path="roles" cssClass="error" />
-  <form:checkbox path="roles" value="ROLE_USER"/>Student
-  <form:checkbox path="roles" value="ROLE_ADMIN"/>Teacher
-  <br/><br/>
-  <input type="submit" value="Add User"/>
-</form:form>
+      <div class="mb-3">
+        <form:label path="username" class="form-label">Username</form:label>
+        <form:input type="text" path="username" class="form-control"/>
+        <form:errors path="username" cssClass="error" />
+      </div>
+
+      <div class="mb-3">
+        <form:label path="password" class="form-label">Password</form:label>
+        <form:input type="password" path="password" class="form-control"/>
+        <form:errors path="password" cssClass="error" />
+      </div>
+
+      <div class="mb-3">
+        <form:label path="confirm_password" class="form-label">Confirm Password</form:label>
+        <form:input type="password" path="confirm_password" class="form-control"/>
+        <form:errors path="confirm_password" cssClass="error" />
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Roles</label>
+        <div class="form-check">
+          <form:checkbox path="roles" value="ROLE_USER" class="form-check-input" id="roleUser"/>
+          <label class="form-check-label" for="roleUser">Student</label>
+        </div>
+        <div class="form-check">
+          <form:checkbox path="roles" value="ROLE_ADMIN" class="form-check-input" id="roleAdmin"/>
+          <label class="form-check-label" for="roleAdmin">Teacher</label>
+        </div>
+        <form:errors path="roles" cssClass="error" />
+      </div>
+
+      <div class="d-grid">
+        <input type="submit" value="Add User" class="btn btn-primary"/>
+      </div>
+    </form:form>
+  </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
