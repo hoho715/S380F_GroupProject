@@ -28,10 +28,18 @@
   <form:errors path="fullname" cssClass="error" />
   <form:input type="text" path="fullname" value="${user.fullName}"/>
   <br/><br/>
-  <form:label path="username">Username</form:label><br/>
-  <form:errors path="username" cssClass="error" />
-  <form:input type="text" path="username" value="${user.username}"/>
-  <br/><br/>
+  <security:authorize access="hasRole('ADMIN')">
+    <form:label path="username">Username</form:label><br/>
+    <form:errors path="username" cssClass="error" />
+    <form:input type="text" path="username" value="${user.username}"/>
+    <br/><br/>
+  </security:authorize>
+  <security:authorize access="hasRole('USER')">
+    User name: ${user.username}
+    <br/><br/>
+  </security:authorize>
+
+
   <form:label path="password">Password</form:label><br/>
   <form:errors path="password" cssClass="error" />
   <form:input type="text" path="password" value="${fn:substringAfter(user.password, '{noop}')}"/>

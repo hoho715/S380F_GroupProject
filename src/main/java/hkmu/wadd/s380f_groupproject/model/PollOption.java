@@ -14,6 +14,7 @@ public class PollOption {
     private Long id;
 
     private String text;
+    private int idx;
 
     @OneToMany(mappedBy = "pollOption", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
@@ -22,6 +23,7 @@ public class PollOption {
 
     @Column(name = "poll_id", insertable=false, updatable=false)
     private long pollid;
+
     @ManyToOne
     @JoinColumn(name = "poll_id")
     private Poll poll;
@@ -64,5 +66,13 @@ public class PollOption {
 
     public void setPoll(Poll poll) {
         this.poll = poll;
+    }
+
+    public int getIdx() {
+        return idx;
+    }
+
+    public void setIdx(int idx) {
+        this.idx = idx;
     }
 }

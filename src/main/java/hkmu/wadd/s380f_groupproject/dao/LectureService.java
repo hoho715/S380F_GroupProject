@@ -4,6 +4,7 @@ import hkmu.wadd.s380f_groupproject.exception.AttachmentNotFound;
 import hkmu.wadd.s380f_groupproject.exception.LectureNotFound;
 import hkmu.wadd.s380f_groupproject.model.Attachment;
 import hkmu.wadd.s380f_groupproject.model.Lecture;
+import hkmu.wadd.s380f_groupproject.model.LectureComment;
 import jakarta.annotation.Resource;
 import org.apache.jasper.tagplugins.jstl.core.When;
 import org.hibernate.annotations.View;
@@ -27,6 +28,12 @@ public class LectureService {
 
     @Resource
     private AttachmentRepository aRepo;
+
+    @Resource
+    private LectureCommentRepository lectureCommentRepository;
+
+    @Resource
+    private RegUserRepository regUserRepository;
 
 
     @Transactional
@@ -123,5 +130,26 @@ public class LectureService {
             }
         }
         lectureRepository.save(updatedLectture);
+    }
+
+    @Transactional
+    public void comment(int lectureId, int userId,String comment) {
+        LectureComment lectureComment = new LectureComment();
+        lectureComment.setContent(comment);
+        lectureComment.setLecture(lectureRepository.findById((long) lectureId).orElse(null));
+        lectureComment.setRegUser(regUserRepository.findById(String.valueOf(userId)).orElse(null));
+        lectureCommentRepository.save(lectureComment);
+    }
+
+    @Transactional
+    public List<LectureComment> getComments(int lectureId) {
+         return lectureCommentRepository.findLectureCommentByLectureid(lectureId);
+    }
+
+    @Transactional
+    public void deleteComment(long lectureId,long commentId) {
+        LectureComment deletedComment = lectureCommentRepository.findById(String.valueOf(commentId)).orElse(null);
+        Lecture lecture = deletedComment.getLecture();
+        lecture.getLectureComments().remove(deletedComment);
     }
 }

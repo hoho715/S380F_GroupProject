@@ -35,6 +35,11 @@
     </security:authorize>
     <br/>
 
+    <security:authorize access="hasRole('ADMIN')">
+        <a href="<c:url value="/poll/create" />">Create poll</a><br /><br />
+    </security:authorize>
+    <br/>
+
     <c:choose>
         <c:when test="${fn:length(lectureData) == 0}">
             <i>There are no lecture available.</i>
@@ -55,11 +60,36 @@
                             </td>
                         </security:authorize>
                     </tr>
-
                 </c:forEach>
             </table>
-
         </c:otherwise>
     </c:choose>
+
+    <c:choose>
+        <c:when test="${fn:length(pollData) == 0}">
+            <i>There are no poll available.</i>
+            <br/>
+        </c:when>
+        <c:otherwise>
+            <table border="1">
+                <tr>
+                    <th>Poll</th>
+                </tr>
+                <c:forEach items="${pollData}" var="entry">
+                    <tr>
+                        <td>
+                            <security:authorize access="hasRole('USER')">
+                                <a href="<c:url value="/poll/vote/${entry.id}" />">${entry.question}</a>
+                            </security:authorize>
+                            <security:authorize access="hasRole('ADMIN')">
+                                <a href="<c:url value="/poll/view/${entry.id}" />">${entry.question}</a>
+                            </security:authorize>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:otherwise>
+    </c:choose>
+
 </body>
 </html>

@@ -15,15 +15,16 @@
   ${lectureData.lectureName}<br/>
   ${lectureData.lectureDescription}<br/>
 
+<security:authorize access="hasRole('ADMIN')">
+    <td>
+        [<a href="<c:url value="/course/delete/${lectureData.id}" />">Delete lecture</a>]
+    </td>
+</security:authorize>
+
 <table>
     <tr>
         <th>Lecture material</th>
     </tr>
-    <security:authorize access="hasRole('ADMIN')">
-        <td>
-            [<a href="<c:url value="/course/delete/${lectureData.id}" />">Delete lecture</a>]
-        </td>
-    </security:authorize>
 
         <c:forEach items="${lectureData.attachments}" var="attachment" varStatus="status">
     <tr>
@@ -38,7 +39,32 @@
             </security:authorize>
     </tr>
         </c:forEach>
+</table>
 
+<security:authentication var="userid" property="principal.username" />
+<form action="<c:url value="/course/${lectureData.id}/user/${userid}/comment"/>" method="post">
+    <input type="text" name="message" required>
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    <input type="submit" value="comment">
+</form>
+
+<table>
+    <tr>
+        <th>Comments</th>
+    </tr>
+
+    <c:forEach items="${messageData}" var="message" varStatus="status">
+        <tr>
+            <td>
+                ${message.regUser.username}:${message.content}
+            </td>
+            <security:authorize access="hasRole('ADMIN')">
+                <td>
+                    [<a href="<c:url value="/course/${lectureData.id}/deleteMessage/${message.id}" />">Delete</a>]
+                </td>
+            </security:authorize>
+        </tr>
+    </c:forEach>
 </table>
 </body>
 </html>
