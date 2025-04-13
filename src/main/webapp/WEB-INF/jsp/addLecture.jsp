@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Add Lecture</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Customer Support</title>
   <style>
     .error {
-      color: #dc3545;
-      font-size: 0.875em;
+      color: red;
+      font-weight: bold;
+      display: block;
     }
   </style>
 </head>
-
+<a href="<c:url value="/user" />">Back</a>
 <body class="bg-light">
 <div class="container mt-5">
   <div class="row justify-content-center">

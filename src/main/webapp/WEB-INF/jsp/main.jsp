@@ -5,7 +5,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 </head>
-
+<body>
 <body class="bg-light">
 <div class="container mt-4">
     <div class="card shadow">
@@ -34,6 +34,13 @@
                     </security:authorize>
                 </div>
             </div>
+
+            <security:authorize access="hasRole('ADMIN') or hasRole('USER')">
+                <a href="<c:url value="/course/history" />">Comment and vote history</a>
+            </security:authorize>
+            <security:authorize access="hasRole('ADMIN')">
+                <a href="<c:url value="/poll/create" />">Create poll</a><br /><br />
+            </security:authorize>
 
             <div class="d-flex gap-3 mb-4 flex-wrap">
                 <security:authorize access="hasRole('ADMIN')">
@@ -104,6 +111,34 @@
         </div>
     </div>
 </div>
+
+<security:authorize access="hasRole('USER')||hasRole('ADMIN')">
+    <c:choose>
+        <c:when test="${fn:length(pollData) == 0}">
+            <i>There are no poll available.</i>
+            <br/>
+        </c:when>
+        <c:otherwise>
+            <table border="1">
+                <tr>
+                    <th>Poll</th>
+                </tr>
+                <c:forEach items="${pollData}" var="entry">
+                    <tr>
+                        <td>
+                            <security:authorize access="hasRole('USER')">
+                                <a href="<c:url value="/poll/vote/${entry.id}" />">${entry.question}</a>
+                            </security:authorize>
+                            <security:authorize access="hasRole('ADMIN')">
+                                <a href="<c:url value="/poll/view/${entry.id}" />">${entry.question}</a>
+                            </security:authorize>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:otherwise>
+    </c:choose>
+</security:authorize>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -11,6 +11,10 @@
     <title>Lecture</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<body>
+<a href="<c:url value="/course" />">Return to course list</a><br/>
+  ${lectureData.lectureName}<br/>
+  ${lectureData.lectureDescription}<br/>
 
 <body class="bg-light">
 <div class="container mt-4">
@@ -61,7 +65,31 @@
         </div>
     </div>
 </div>
+<security:authentication var="userid" property="principal.username" />
+<form action="<c:url value="/course/${lectureData.id}/user/${userid}/comment"/>" method="post">
+    <input type="text" name="message" required>
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    <input type="submit" value="comment">
+</form>
 
+<table>
+    <tr>
+        <th>Comments</th>
+    </tr>
+
+    <c:forEach items="${messageData}" var="message" varStatus="status">
+        <tr>
+            <td>
+                    ${message.regUser.username}:${message.content}
+            </td>
+            <security:authorize access="hasRole('ADMIN')">
+                <td>
+                    [<a href="<c:url value="/course/${lectureData.id}/deleteMessage/${message.id}" />">Delete</a>]
+                </td>
+            </security:authorize>
+        </tr>
+    </c:forEach>
+</table>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

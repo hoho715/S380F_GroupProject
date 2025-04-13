@@ -10,6 +10,7 @@
     }
   </style>
 </head>
+<body>
 <div class="card shadow">
   <div class="card-body">
     <h2 class="card-title mb-4">Add User</h2>

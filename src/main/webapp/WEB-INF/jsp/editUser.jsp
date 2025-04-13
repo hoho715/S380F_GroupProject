@@ -11,6 +11,7 @@
     }
   </style>
 </head>
+<body>
 
 <body class="bg-light">
 <div class="container mt-5">
@@ -27,7 +28,6 @@
             </security:authorize>
           </div>
 
-          <h2 class="card-title text-center mb-4">Edit User</h2>
 
           <form:form method="POST" modelAttribute="editUser" class="needs-validation" novalidate="novalidate">
             <div class="mb-3">

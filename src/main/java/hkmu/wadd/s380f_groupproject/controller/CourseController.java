@@ -1,6 +1,8 @@
 package hkmu.wadd.s380f_groupproject.controller;
 
+import hkmu.wadd.s380f_groupproject.dao.HistoryService;
 import hkmu.wadd.s380f_groupproject.dao.LectureService;
+import hkmu.wadd.s380f_groupproject.dao.PollService;
 import hkmu.wadd.s380f_groupproject.exception.AttachmentNotFound;
 import hkmu.wadd.s380f_groupproject.exception.LectureNotFound;
 import hkmu.wadd.s380f_groupproject.model.Attachment;
@@ -12,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import org.hibernate.engine.jdbc.mutation.spi.BindingGroup;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.web.exchanges.HttpExchange;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -31,17 +34,23 @@ import java.util.UUID;
 public class CourseController {
     @Resource
     private LectureService lectureService;
+    @Resource
+    private PollService pollService;
+    @Resource
+    private HistoryService historyService;
 
     @GetMapping(value = {"", "/list"})
     public String list(ModelMap model) {
         model.addAttribute("lectureData", lectureService.getLectures());
         model.addAttribute("courseName", Course.courseName);
+        model.addAttribute("pollData",pollService.getPolls());
         return "main";
     }
 
     @GetMapping(value = {"/lecture/{id}"})
     public String detail(ModelMap model,@PathVariable int id) {
         model.addAttribute("lectureData", lectureService.getLecturebyId(id));
+        model.addAttribute("messageData",lectureService.getComments(id));
         return "lecture";
     }
 
@@ -156,6 +165,35 @@ public class CourseController {
             throws LectureNotFound, AttachmentNotFound {
         lectureService.deleteAttachment(lectureId, attachmentId);
         return "redirect:/course/lecture/" + lectureId;
+    }
+
+    @PostMapping("/{lectureId}/user/{userId}/comment")
+    public String courseComment(@PathVariable("lectureId") long lectureId,
+                   @PathVariable("userId") long userId,HttpServletRequest request){
+        String message = request.getParameter("message");
+        lectureService.comment((int) lectureId, (int) userId,message);
+        return "redirect:/course/lecture/"+lectureId;
+    }
+
+    @GetMapping("/{lectureId}/deleteMessage/{messageId}")
+    public String deleteComment(@PathVariable("messageId") long messageId,@PathVariable("lectureId") long lectureId) {
+        lectureService.deleteComment(lectureId,messageId);
+        return "redirect:/course/lecture/"+lectureId;
+    }
+
+    @GetMapping(value = {"/history"})
+    public String history(ModelMap model,HttpServletRequest request,Principal principal) {
+        if(request.isUserInRole("ROLE_ADMIN")){
+            model.addAttribute("lCommentHistory",historyService.getAllLectureCommentHistory());
+            model.addAttribute("pCommentHistory",historyService.getAllPollCommentHistory());
+            model.addAttribute("voteHistory",historyService.getAllVoteHistory());
+        }
+        if(request.isUserInRole("ROLE_USER")){
+            model.addAttribute("lCommentHistory",historyService.getLectureCommentHistoryById(Long.parseLong(principal.getName())));
+            model.addAttribute("pCommentHistory",historyService.getPollCommentHistoryById(Long.parseLong(principal.getName())));
+            model.addAttribute("voteHistory",historyService.getVoteHistoryById(Long.parseLong(principal.getName())));
+        }
+        return "history";
     }
 
 

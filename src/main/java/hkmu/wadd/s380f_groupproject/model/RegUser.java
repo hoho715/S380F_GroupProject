@@ -23,6 +23,31 @@ public class RegUser {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    public enum Role {
+        ROLE_USER,
+        ROLE_ADMIN
+    }
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<PollResponse> pollResponses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<LectureCommentHistory> lectureCommentHistories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<PollCommentHistory>  pollCommentHistories= new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<VoteHistory>  voteHistories = new ArrayList<>();
+
     public RegUser() {}
 
     public RegUser(String fullName,String username, String password, String role) {
@@ -38,16 +63,6 @@ public class RegUser {
         this.password = password;
         this.role = Role.valueOf(role);
     }
-
-    public enum Role {
-        ROLE_USER,
-        ROLE_ADMIN
-    }
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL, orphanRemoval = true)
-    @Fetch(FetchMode.SUBSELECT)
-    private List<PollResponse> pollResponses = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -111,6 +126,30 @@ public class RegUser {
 
     public void setPollResponses(List<PollResponse> pollResponses) {
         this.pollResponses = pollResponses;
+    }
+
+    public List<LectureCommentHistory> getLectureCommentHistories() {
+        return lectureCommentHistories;
+    }
+
+    public void setLectureCommentHistories(List<LectureCommentHistory> lectureCommentHistories) {
+        this.lectureCommentHistories = lectureCommentHistories;
+    }
+
+    public List<PollCommentHistory> getPollCommentHistories() {
+        return pollCommentHistories;
+    }
+
+    public void setPollCommentHistories(List<PollCommentHistory> pollCommentHistories) {
+        this.pollCommentHistories = pollCommentHistories;
+    }
+
+    public List<VoteHistory> getVoteHistories() {
+        return voteHistories;
+    }
+
+    public void setVoteHistories(List<VoteHistory> voteHistories) {
+        this.voteHistories = voteHistories;
     }
 }
 
