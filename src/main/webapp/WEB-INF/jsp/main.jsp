@@ -35,23 +35,27 @@
                 </div>
             </div>
 
-            <security:authorize access="hasRole('ADMIN') or hasRole('USER')">
-                <a href="<c:url value="/course/history" />">Comment and vote history</a>
-            </security:authorize>
-            <security:authorize access="hasRole('ADMIN')">
-                <a href="<c:url value="/poll/create" />">Create poll</a><br /><br />
-            </security:authorize>
-
             <div class="d-flex gap-3 mb-4 flex-wrap">
+                    <security:authorize access="hasRole('ADMIN')">
+                        <a href="<c:url value="/course/create" />" class="btn btn-success">
+                            Add Lecture
+                        </a>
+                    </security:authorize>
+                    <security:authorize access="hasRole('ADMIN')">
+                        <a href="<c:url value="/poll/create" />" class="btn btn-info">
+                            Create poll
+                        </a>
+                    </security:authorize>
+
                 <security:authorize access="hasRole('ADMIN')">
                     <a href="<c:url value="/user" />" class="btn btn-info">
                         Manage User Accounts
                     </a>
                 </security:authorize>
 
-                <security:authorize access="hasRole('ADMIN')">
-                    <a href="<c:url value="/course/create" />" class="btn btn-success">
-                        Add Lecture
+                <security:authorize access="hasRole('ADMIN') or hasRole('USER')">
+                    <a href="<c:url value="/course/history" />" class="btn btn-info">
+                        Comment and vote history
                     </a>
                 </security:authorize>
 
@@ -87,20 +91,20 @@
                                             ${entry.lectureName}
                                         </a>
                                     </td>
-
+                                    <security:authorize access="hasRole('ADMIN')">
                                     <td class="text-end">
                                         <div class="d-flex gap-2 justify-content-end">
-                                            <a href="<c:url value="/course/edit/${entry.id}" />" class="btn btn-sm btn-primary">
-                                                Edit
-                                            </a>
 
-                                            <security:authorize access="hasRole('ADMIN')">
+                                                <a href="<c:url value="/course/edit/${entry.id}" />" class="btn btn-sm btn-primary">
+                                                    Edit
+                                                </a>
                                                 <a href="<c:url value="/course/delete/${entry.id}" />" class="btn btn-sm btn-danger">
                                                     Delete
                                                 </a>
-                                            </security:authorize>
+
                                         </div>
                                     </td>
+                                    </security:authorize>
                                 </tr>
                             </c:forEach>
                             </tbody>
@@ -108,38 +112,46 @@
                     </div>
                 </c:otherwise>
             </c:choose>
+
+
+            <security:authorize access="hasRole('USER')||hasRole('ADMIN')">
+                <c:choose>
+                    <c:when test="${fn:length(pollData) == 0}">
+                        <div class="alert alert-info">
+                            There are no poll available.
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Poll</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                <c:forEach items="${pollData}" var="entry">
+                                        <tr>
+                                            <td class="text-decoration-none fw-bold">
+                                                <security:authorize access="hasRole('USER')">
+                                                     <a href="<c:url value="/poll/vote/${entry.id}"/>" class="text-decoration-none fw-bold">${entry.question}</a>
+                                                </security:authorize>
+                                                <security:authorize access="hasRole('ADMIN')">
+                                                    <a href="<c:url value="/poll/view/${entry.id}"/>" class="text-decoration-none fw-bold">${entry.question}</a>
+                                                </security:authorize>
+                                            </td>
+                                        </tr>
+                                </c:forEach>
+                                    </tbody>
+                            </table>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </security:authorize>
         </div>
     </div>
 </div>
-
-<security:authorize access="hasRole('USER')||hasRole('ADMIN')">
-    <c:choose>
-        <c:when test="${fn:length(pollData) == 0}">
-            <i>There are no poll available.</i>
-            <br/>
-        </c:when>
-        <c:otherwise>
-            <table border="1">
-                <tr>
-                    <th>Poll</th>
-                </tr>
-                <c:forEach items="${pollData}" var="entry">
-                    <tr>
-                        <td>
-                            <security:authorize access="hasRole('USER')">
-                                <a href="<c:url value="/poll/vote/${entry.id}" />">${entry.question}</a>
-                            </security:authorize>
-                            <security:authorize access="hasRole('ADMIN')">
-                                <a href="<c:url value="/poll/view/${entry.id}" />">${entry.question}</a>
-                            </security:authorize>
-                        </td>
-                    </tr>
-                </c:forEach>
-            </table>
-        </c:otherwise>
-    </c:choose>
-</security:authorize>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
