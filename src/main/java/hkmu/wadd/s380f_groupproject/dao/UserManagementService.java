@@ -38,7 +38,7 @@ public class UserManagementService {
 
     @Transactional
     public void createUser(String fullname,String username, String password, String roles) {
-        RegUser user = new RegUser(fullname,username, password, roles);
+        RegUser user = new RegUser(fullname,username, "{noop}"+password, roles);
         userRepo.save(user);
     }
 

@@ -61,6 +61,8 @@ public class RegUser {
         this.fullName = fullName;
         this.username = username;
         this.password = password;
+        this.emailAddress = emailAddress;
+        this.phoneNumber = phoneNumber;
         this.role = Role.valueOf(role);
     }
 

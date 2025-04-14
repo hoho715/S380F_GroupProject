@@ -79,7 +79,9 @@
                             <thead class="table-primary">
                                 <tr>
                                     <th>Lecture Name</th>
+                                    <security:authorize access="hasRole('ADMIN')">
                                     <th class="text-end">Actions</th>
+                                    </security:authorize>
                                 </tr>
                             </thead>
 

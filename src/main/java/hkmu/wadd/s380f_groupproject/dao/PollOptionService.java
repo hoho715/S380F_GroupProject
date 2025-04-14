@@ -64,7 +64,7 @@ public class PollOptionService {
         VoteHistory voteHistory = new VoteHistory();
         voteHistory.setUser(response.getUser());
         voteHistory.setPollQuestion(response.getPollOption().getPoll().getQuestion());
-        voteHistory.setOption(storeText+" to "+option.getText());
+        voteHistory.setOption("Option change from "+storeText+" to "+option.getText());
         voteHistory.setAction("CHANGE");
         voteHistoryRepository.save(voteHistory);
     }

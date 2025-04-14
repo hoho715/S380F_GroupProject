@@ -6,6 +6,7 @@ import hkmu.wadd.s380f_groupproject.validator.UserAddValidator;
 import hkmu.wadd.s380f_groupproject.validator.UserEditValidator;
 import hkmu.wadd.s380f_groupproject.validator.UserRegisterValidator;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -185,13 +186,18 @@ public class UserManagementController {
     }
 
     @PostMapping("/update/{userid}")
-    public String update(@ModelAttribute("editUser") @Valid editForm form, BindingResult result,@PathVariable("userid") String userid) throws IOException {
+    public String update(@ModelAttribute("editUser") @Valid editForm form, BindingResult result,@PathVariable("userid") String userid, HttpServletRequest request) throws IOException {
         userEditValidator.validate(form, result);
         if (result.hasErrors()) {
             return "editUser";
         }
         umService.updateUser(userid,form.getUsername(),form.getFullname(),form.getPassword(),form.getEmail(),form.getPhone(),form.getRoles());
-        return "redirect:/user/list";
+
+        if(request.isUserInRole("ROLE_ADMIN")){
+            return "redirect:/user/list";
+        }
+
+        return "redirect:/course";
     }
 
     @GetMapping("/delete/{userid}")

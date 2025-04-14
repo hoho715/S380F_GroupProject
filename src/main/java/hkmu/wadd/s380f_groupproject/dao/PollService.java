@@ -15,6 +15,9 @@ public class PollService {
     private PollRepository pollRepository;
 
     @Resource
+    private  PollResponseRepository pollResponseRepository;
+
+    @Resource
     private RegUserRepository regUserRepository;
 
     @Resource
@@ -22,6 +25,8 @@ public class PollService {
 
     @Resource
     private PollCommentHistoryRepository pollCommentHistoryRepository;
+    @Autowired
+    private PollOptionRepository pollOptionRepository;
 
     @Transactional
     public List<Poll> getPolls() {
@@ -35,8 +40,16 @@ public class PollService {
 
     @Transactional
     public void delete(long id) {
-        Poll deletedLecture = pollRepository.findById(id).orElse(null);
-        pollRepository.delete(deletedLecture);
+        Poll deletedPoll = pollRepository.findById(id).orElse(null);
+
+        for (PollOption option : deletedPoll.getPollOptions()) {
+            for (PollResponse response : option.getPollResponses()) {
+                response.setPollOption(null);
+                response.setUser(null);
+                pollResponseRepository.save(response);
+            }
+        }
+        pollRepository.delete(deletedPoll);
     }
 
     @Transactional

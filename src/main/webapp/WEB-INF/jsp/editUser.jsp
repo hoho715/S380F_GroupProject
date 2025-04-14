@@ -40,7 +40,8 @@
             <div class="mb-3">
               <form:label path="username" class="form-label">Username</form:label>
               <form:input type="text" path="username" class="form-control"
-                          value="${user.username}" required="required"/>
+                          value="${user.username}" required="required"
+                          readonly="${user.role.toString().equals('ROLE_USER')?'true':'false'}"/>
               <form:errors path="username" cssClass="error" />
             </div>
 
@@ -63,14 +64,16 @@
                 <form:radiobutton path="roles" value="ROLE_USER"
                                   class="form-check-input"
                                   id="roleUser"
-                                  checked="${user.role.toString().equals('ROLE_USER')?'checked':''}"/>
+                                  checked="${user.role.toString().equals('ROLE_USER')?'checked':''}"
+                                  />
                 <label class="form-check-label" for="roleUser">Student</label>
               </div>
               <div class="form-check">
                 <form:radiobutton path="roles" value="ROLE_ADMIN"
                                   class="form-check-input"
                                   id="roleAdmin"
-                                  checked="${user.role.toString().equals('ROLE_ADMIN')?'checked':''}"/>
+                                  checked="${user.role.toString().equals('ROLE_ADMIN')?'checked':''}"
+                                  disabled="${user.role.toString().equals('ROLE_USER')?'true':'false'}"/>
                 <label class="form-check-label" for="roleAdmin">Teacher</label>
               </div>
               <form:errors path="roles" cssClass="error" />
